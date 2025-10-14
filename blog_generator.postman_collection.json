@@ -1,0 +1,66 @@
+{
+  "info": {
+    "name": "Blog Generator Security QA",
+    "_postman_id": "12345678-abcd-efgh-ijkl-1234567890ab",
+    "description": "Security + functionality checks for the AI blog generator API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Generate Blog Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"topic\": \"Zero Trust Security\" }"
+        },
+        "url": {
+          "raw": "http://localhost:5000/generate",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["generate"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Status Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:5000/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["status"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Fuzz Input Test",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"topic\": \"<script>alert(1)</script>\" }"
+        },
+        "url": {
+          "raw": "http://localhost:5000/generate",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["generate"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
