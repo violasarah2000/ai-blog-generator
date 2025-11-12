@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 # Create app user in prod
 #RUN groupadd -r app && useradd -r -g app app
