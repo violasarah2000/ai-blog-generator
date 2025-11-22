@@ -153,6 +153,5 @@ def create_app(config_class=Config):
 app = create_app()
 if __name__ == "__main__":
     # Run app on localhost:5000
-    # Note: debug=True is not recommended for production.
-    # The model will load on the first request in debug mode.
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Note: For production, do not enable debug mode!
+    app.run(host="0.0.0.0", port=5000)
