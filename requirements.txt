@@ -1,5 +1,5 @@
 flask==2.3.3
-transformers==4.40.0
+transformers==4.57.3
 torch==2.2.2
 bleach==6.3.0
 flask-limiter==2.9.2
