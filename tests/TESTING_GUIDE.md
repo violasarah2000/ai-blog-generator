@@ -882,5 +882,5 @@ pytest tests/ --cov=app --cov-report=html && open htmlcov/index.html
 
 **Questions?** See related documentation:
 - `security/reports/SECURITY_SCANNING.md` - Vulnerability scanning and fuzz testing
-- `docs/guides/SETUP.md` - Installation guide
+- `docs/SETUP.md` - Installation guide
 - `config/docker/DEPLOYMENT.md` - Deployment guide

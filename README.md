@@ -316,7 +316,7 @@ python ai_blog_generator.py
 python fuzz_tester.py
 ```
 
-👉 **Full setup guide**: [docs/guides/SETUP.md](./docs/guides/SETUP.md)
+👉 **Full setup guide**: [docs/SETUP.md](./docs/SETUP.md)
 
 ---
 
@@ -330,7 +330,7 @@ All documentation has been consolidated into a single organized location:
 
 | Need | Link |
 |------|------|
-| 🚀 **Get started in 5 minutes** | [SETUP.md](./docs/guides/SETUP.md) |
+| 🚀 **Get started in 5 minutes** | [SETUP.md](./docs/SETUP.md) |
 | 🧪 **Run security tests** | [tests/TESTING_GUIDE.md](./tests/TESTING_GUIDE.md) |
 | 🐳 **Deploy with Docker** | [config/docker/DEPLOYMENT.md](./config/docker/DEPLOYMENT.md) |
 | 🏗️ **Understand the architecture** | [ARCHITECTURE.md](./docs/architecture/ARCHITECTURE.md) |

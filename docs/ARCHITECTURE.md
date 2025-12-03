@@ -121,15 +121,15 @@ Business logic for content generation with retry strategy.
 - Comprehensive error logging
 - Backend abstraction
 
-### 4. **Model Backend Abstraction** (`app/model_backend.py` + `app/backends.py`)
+### 4. **Model Backend Abstraction** (`app/model_backend.py`)
 
-Plugin architecture supporting multiple model providers.
+Plugin architecture supporting multiple model providers (Ollama currently, extensible to LiteLLM, vLLM, etc.).
 
 **Base Class:** `ModelBackend` (abstract)
 - `generate(prompt, **kwargs)` - Generate text
 - `get_token_count(text)` - Count tokens
 
-**Implementations:**
+**Current Implementation:**
 
 #### OllamaBackend
 - **Connection**: HTTP requests to Ollama API
@@ -139,21 +139,13 @@ Plugin architecture supporting multiple model providers.
   - Connection verification on initialization
   - Model availability checking
   - Timeout protection (300 seconds)
-  - Token estimation via embeddings endpoint
+  - Token estimation via word count heuristic
   - Comprehensive error logging
 
-#### HuggingFaceBackend
-- **Connection**: Direct Python transformers library
-- **Model**: `stabilityai/stablelm-zephyr-3b` (configurable)
-- **Features**:
-  - GPU/CPU auto-detection
-  - Pipeline-based generation
-  - Accurate token counting via tokenizer
-  - Device mapping for optimal memory usage
-
-**Factory Function:** `init_model_backend(config)` (`app/backends.py`)
-- Routes to correct backend based on `MODEL_BACKEND` config
-- Handles initialization errors gracefully
+**Factory Function:** `create_backend(backend_type, **config)` (`app/model_backend.py`)
+- Returns appropriate backend implementation
+- Error handling and configuration validation
+- Extensible for new backends (LiteLLM, vLLM, cloud providers)
 
 ---
 

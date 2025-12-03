@@ -9,8 +9,8 @@ from app.config import TestingConfig
 @pytest.fixture
 def app():
     """Create app for testing with mocked backend."""
-    # Mock the create_backend function (called by init_model_backend) to avoid Ollama initialization
-    with patch("app.backends.create_backend") as mock_create_backend:
+    # Mock the create_backend function to avoid Ollama initialization
+    with patch("app.model_backend.create_backend") as mock_create_backend:
         # Create a mock backend that simulates generation
         mock_backend = MagicMock()
         mock_backend.generate.return_value = (
