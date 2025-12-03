@@ -144,14 +144,15 @@ pytest tests/integration/ -vvs
 
 ### Run All Tests
 ```bash
-# All 74 tests (unit + integration)
-pytest tests/ -q
+# All 71 tests (unit + integration)
+pytest tests/ -v
 
-# Or use the helper script
-./run_tests.sh
+# Or use the test scripts
+./scripts/run_unit_tests.sh     # Unit tests with coverage
+pytest tests/integration/ -v    # Integration tests only
 ```
 
-**Test Documentation**: See [tests/README_TESTS.md](./tests/README_TESTS.md) for details
+**Test Documentation**: See [tests/TESTING_GUIDE.md](./tests/TESTING_GUIDE.md) for details
 
 ---
 
