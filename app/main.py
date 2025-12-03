@@ -235,7 +235,7 @@ UI_TEMPLATE = """
 <body>
     <div class="container">
         <h1>🚀 AI Blog Generator</h1>
-        <p class="subtitle">Generate 5-paragraph blog posts with AI • Powered by Ollama/HuggingFace</p>
+        <p class="subtitle">Generate 5-paragraph blog posts with AI • Powered by Ollama (Local)</p>
         
         <form id="blogForm">
             <div class="form-group">

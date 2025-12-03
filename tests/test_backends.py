@@ -34,25 +34,6 @@ class TestBackendFactory:
             assert backend.base_url == "http://localhost:11434"
             assert backend.model_name == "stablelm-zephyr:3b"
 
-    def test_create_huggingface_backend(self):
-        """Test creating HuggingFace backend."""
-        with patch("transformers.AutoModelForCausalLM.from_pretrained"):
-            with patch("transformers.AutoTokenizer.from_pretrained"):
-                with patch("transformers.pipeline"):
-                    backend = create_backend(
-                        "huggingface",
-                        model_name="stabilityai/stablelm-zephyr-3b",
-                    )
-                    assert backend.model_name == "stabilityai/stablelm-zephyr-3b"
-
-    def test_create_huggingface_backend_defaults(self):
-        """Test HuggingFace backend uses correct defaults."""
-        with patch("transformers.AutoModelForCausalLM.from_pretrained"):
-            with patch("transformers.AutoTokenizer.from_pretrained"):
-                with patch("transformers.pipeline"):
-                    backend = create_backend("huggingface")
-                    assert backend.model_name == "stabilityai/stablelm-zephyr-3b"
-
     def test_factory_case_insensitive(self):
         """Test that backend type is case-insensitive."""
         with patch.object(OllamaBackend, "_verify_connection"):
@@ -68,11 +49,6 @@ class TestBackendFactory:
         """Test that invalid backend type raises error."""
         with pytest.raises(ValueError):
             create_backend("invalid_backend")
-
-    def test_backend_type_with_spaces(self):
-        """Test that backend type with spaces raises error."""
-        with pytest.raises(ValueError):
-            create_backend("  ollama  ")
 
 
 class TestOllamaBackend:

@@ -13,47 +13,32 @@ logger = logging.getLogger(__name__)
 
 def init_model_backend(config: Dict[str, Any]) -> ModelBackend:
     """
-    Initialize and return model backend based on configuration.
+    Initialize and return Ollama model backend.
 
-    Centralizes backend selection logic to avoid duplication between
-    app initialization and direct calls.
+    Uses Ollama for local LLM serving.
 
     Args:
-        config: Configuration dictionary with MODEL_BACKEND and backend-specific settings:
-                - MODEL_BACKEND: "ollama" or "huggingface"
-                - OLLAMA_BASE_URL: Ollama server URL (if using ollama)
-                - OLLAMA_MODEL: Model name in Ollama (if using ollama)
-                - HUGGINGFACE_MODEL_NAME: HuggingFace model ID (if using huggingface)
+        config: Configuration dictionary with backend-specific settings:
+                - OLLAMA_BASE_URL: Ollama server URL (default: http://localhost:11434)
+                - OLLAMA_MODEL: Model name in Ollama (default: stablelm-zephyr:3b)
 
     Returns:
-        Initialized ModelBackend instance
+        Initialized OllamaBackend instance
 
     Raises:
-        ValueError: If backend type is unknown
-        RuntimeError: If backend initialization fails
+        RuntimeError: If Ollama connection fails
     """
-    backend_type = config.get("MODEL_BACKEND", "ollama").lower()
-
-    logger.info(f"Initializing model backend: {backend_type.upper()}")
+    logger.info("Initializing model backend: OLLAMA")
 
     try:
-        if backend_type == "ollama":
-            backend = create_backend(
-                "ollama",
-                ollama_base_url=config.get("OLLAMA_BASE_URL", "http://localhost:11434"),
-                ollama_model=config.get("OLLAMA_MODEL", "stablelm-zephyr:3b"),
-            )
-        elif backend_type == "huggingface":
-            backend = create_backend(
-                "huggingface",
-                model_name=config.get("HUGGINGFACE_MODEL_NAME", "stabilityai/stablelm-zephyr-3b"),
-            )
-        else:
-            raise ValueError(f"Unknown backend type: {backend_type}")
-
+        backend = create_backend(
+            "ollama",
+            ollama_base_url=config.get("OLLAMA_BASE_URL", "http://localhost:11434"),
+            ollama_model=config.get("OLLAMA_MODEL", "stablelm-zephyr:3b"),
+        )
         logger.info("✓ Model backend initialized successfully.")
         return backend
 
     except Exception as e:
-        logger.exception("Fatal error: Failed to initialize model backend.")
-        raise RuntimeError(f"Could not initialize model backend: {e}")
+        logger.exception("Fatal error: Failed to initialize Ollama backend.")
+        raise RuntimeError(f"Could not initialize Ollama backend: {e}")

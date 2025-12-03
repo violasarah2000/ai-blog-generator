@@ -1,8 +1,7 @@
-"""
-AI Blog Generator application package.
+"""AI Blog Generator application package.
 
 This package contains the core Flask application for generating blog posts
-using secure LLM backends (Ollama or HuggingFace).
+using Ollama for local LLM serving.
 """
 
 from app.main import create_app
