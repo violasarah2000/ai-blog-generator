@@ -1,6 +1,6 @@
 # 🧠 AI Blog Generator  
-### A Secure by Design AI Engineering Demonstration Project  
-Built by **SperksWerks LLC** — Showcasing Modern AI Security Testing
+### Local LLM Testing Lab + Security Engineering Portfolio  
+Built by **SperksWerks LLC** — Demonstrating Secure AI/ML Practices
 
 [![CodeQL](https://github.com/violasarah2000/ai-blog-generator/actions/workflows/codeql.yml/badge.svg)](https://github.com/violasarah2000/ai-blog-generator/actions/workflows/codeql.yml)
 [![Supply Chain Security](https://github.com/violasarah2000/ai-blog-generator/actions/workflows/supply-chain-security.yml/badge.svg)](https://github.com/violasarah2000/ai-blog-generator/actions/workflows/supply-chain-security.yml)
@@ -9,26 +9,51 @@ Built by **SperksWerks LLC** — Showcasing Modern AI Security Testing
 
 ## 🚀 Overview
 
-The **AI Blog Generator** is a Python-based application that produces structured, high-quality blog content using open-source LLMs (Ollama, HuggingFace, etc.).  
+The **AI Blog Generator** generates blog content from your local Ollama models.  
 
-But the *real* purpose of this repo? 
+The *real* purpose? **Demonstrate professional AI Security Engineering.**
 
-### 👉 To demonstrate professional **AI Security Engineering** capabilities
+### What You Can Do
 
-This project showcases the complete secure SDLC for AI systems — from traditional code security to emerging LLM-specific testing methodologies.
+✅ **Generate blog posts** locally (no cloud, no API keys)  
+✅ **Test LLM vulnerabilities** with built-in fuzzing framework  
+✅ **Red team your own models** using attack pattern databases  
+✅ **Validate security controls** with 71 automated tests  
+✅ **Learn secure SDLC practices** for AI systems (and find the cracks)
 
-**You will find:**
+### Enterprise Security Features
+
+This project showcases complete **Secure SDLC for AI Systems**:
 
 ✓ Secure Python + Flask architecture  
-✓ GitHub Actions CI/CD with **SAST**, **DAST**, and **AI-focused scans**  
-✓ Model safety and prompt injection testing  
-✓ LLM fuzzing framework  
-✓ AI red teaming tactics  
+✓ GitHub Actions CI/CD with **SAST**, **DAST**, and **AI-focused vulnerability scans**  
+✓ Prompt injection resistance testing & validation  
+✓ LLM fuzzing framework with attack pattern databases  
+✓ AI red teaming tactics & STRIDE threat modeling  
+✓ Secure supply chain practices (SBOM, dependency scanning, signed commits)  
+✓ Comprehensive test coverage (71 tests including integration tests)
 ✓ STRIDE threat modeling  
-✓ Secure supply chain practices (SBOM, dependency scanning)  
-✓ Signed commits and protected branches  
+✓ Secure supply chain practices (SBOM, dependency scanning, signed commits)  
 
-This repository is a **portfolio demonstration** of capability in securing AI/ML pipelines for enterprise organizations.
+This repository is a **portfolio demonstration** of securing AI/ML pipelines for enterprise organizations.
+
+---
+
+## 🎯 Why This Matters
+
+**The Problem:** Most "AI projects" focus on accuracy. They ignore security.
+
+**The Result:** Models that get jailbroken. Prompts that get injected. Outputs that leak secrets.
+
+**This Project:** Shows you how to build AI systems that are *actually* secure. Not "secure by default," but **secure by design**—with testing to prove it.
+
+Whether you're deploying an LLM to production or just learning AI security, this codebase demonstrates:
+- How to structure AI applications securely
+- What attacks actually work (and how to stop them)
+- How to measure security, not just assume it
+- Professional practices that enterprise organizations expect
+
+**TL;DR:** Build AI systems that don't embarrass you at 3 AM.
 
 ---
 
