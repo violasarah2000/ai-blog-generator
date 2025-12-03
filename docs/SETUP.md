@@ -44,6 +44,51 @@ The app will start on `http://localhost:5000`
 
 ---
 
+## Tuning Generation for Your Model
+
+The `MAX_NEW_TOKENS` setting controls output length. Adjust based on your model:
+
+### Token Recommendations by Model Size
+
+| Model | Parameters | Recommended MAX_NEW_TOKENS | Output Type |
+|-------|------------|---------------------------|------------|
+| **StableLM Zephyr** | 3B | `500` | ~2-3 paragraphs |
+| **Neural Chat** | 7B | `750` | ~3-4 paragraphs |
+| **Llama 2** | 7B-13B | `800-1000` | ~4-5 paragraphs |
+| **Gemma 2** | 9B-27B | `1000-1200` | ~5 paragraphs |
+| **Mistral** | 7B | `800` | ~4-5 paragraphs |
+| **Larger models** | 20B+ | `1500+` | Full blog posts |
+
+### How to Adjust
+
+Edit `.env`:
+```env
+# For 3-7B models (fast, lower memory)
+MAX_NEW_TOKENS=500
+
+# For 9-13B models (balanced)
+MAX_NEW_TOKENS=1000
+
+# For 20B+ models (slower, better quality)
+MAX_NEW_TOKENS=1500
+```
+
+Then restart the app:
+```bash
+python run.py
+```
+
+### Finding Your Sweet Spot
+
+1. Start with the recommended value for your model
+2. Test the `/generate` endpoint with a topic
+3. If output is truncated mid-sentence, increase `MAX_NEW_TOKENS` by 200
+4. If generation is too slow, decrease by 100-200
+
+**Trade-off:** More tokens = better output quality but slower generation time.
+
+---
+
 ## Environment Variables
 
 See `.env.example` for all available configuration options:
@@ -51,11 +96,11 @@ See `.env.example` for all available configuration options:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `OLLAMA_MODEL` | `stablelm-zephyr:3b` | Model name in Ollama |
-| `MAX_NEW_TOKENS` | `500` | Max tokens to generate |
-| `GEN_TEMPERATURE` | `0.7` | Generation temperature (0-1) |
-| `GEN_TOP_P` | `0.9` | Top-p sampling parameter (0-1) |
-| `MAX_TOPIC_LEN` | `200` | Max topic length (chars) |
+| `OLLAMA_MODEL` | `stablelm-zephyr:3b` | Model name in Ollama (see [Tuning](#tuning-generation-for-your-model) section) |
+| `MAX_NEW_TOKENS` | `500` | Max tokens to generate (adjust for your model - see [Tuning](#tuning-generation-for-your-model) above) |
+| `GEN_TEMPERATURE` | `0.7` | Generation temperature (0-1, lower = more deterministic) |
+| `GEN_TOP_P` | `0.9` | Top-p sampling (0-1, lower = more conservative) |
+| `MAX_TOPIC_LEN` | `200` | Max input topic length (chars) |
 | `RATE_LIMIT_HOURLY` | `100` | Hourly request limit |
 | `RATE_LIMIT_MINUTELY` | `10` | Per-minute request limit |
 | `FLASK_ENV` | `development` | `development` or `production` |
