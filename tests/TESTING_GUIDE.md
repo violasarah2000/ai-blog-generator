@@ -875,12 +875,12 @@ pytest tests/ --cov=app --cov-report=html && open htmlcov/index.html
 1. **Run All Tests**: `pytest tests/ -v`
 2. **Check Coverage**: `pytest tests/ --cov=app --cov-report=html`
 3. **Explore Tests**: `cat tests/test_endpoints.py`
-4. **Run Fuzz Tests**: `python run.py & python fuzz_tester.py`
+4. **Run Security Scans**: `python security/security_scan.py` or `python fuzz_tester.py`
 5. **Add More Tests**: Copy patterns from existing tests
 
 ---
 
-**Questions?** See:
-- `TESTING_COMPREHENSIVE.md` - Full documentation
-- `TESTING_QUICKREF.md` - Quick reference
-- `conftest.py` - Test fixtures
+**Questions?** See related documentation:
+- `security/reports/SECURITY_SCANNING.md` - Vulnerability scanning and fuzz testing
+- `docs/guides/SETUP.md` - Installation guide
+- `config/docker/DEPLOYMENT.md` - Deployment guide
