@@ -255,6 +255,119 @@ See `DOCKER_DEPLOYMENT.md` for monitoring setup.
    - Tests against known attack patterns
    - Evaluates robustness
 
+---
+
+## Fuzz Testing - LLM Security Testing
+
+### Overview
+
+Beyond dependency scanning, this project includes **fuzz testing** for LLM-specific vulnerabilities:
+
+- **Prompt Injection** - Attempts to make the model ignore its instructions
+- **XSS/HTML Injection** - Traditional web vulnerabilities
+- **Malformed Input** - Edge cases and boundary testing
+- **Rate Limiting** - DoS protection verification
+
+### Running the Fuzz Tester
+
+**Prerequisites:**
+1. Flask app running on `http://localhost:5000`:
+```bash
+python run.py
+```
+
+2. In another terminal:
+```bash
+python fuzz_tester.py
+```
+
+The fuzzer will:
+- Wait for the server to be ready (up to 2.5 minutes)
+- Run ~20 test cases covering prompt injection and traditional attacks
+- Report success/failure for each test
+- Check for vulnerable responses
+
+### Test Categories
+
+#### 1. Prompt Injection Attacks
+
+| Attack | Payload | What It Tests |
+|--------|---------|---------------|
+| **Ignore Instructions** | Direct instruction override | Model instruction adherence |
+| **Reveal Prompt** | Ask to repeat system prompt | Prompt leakage vulnerability |
+| **Phishing** | Generate malicious content | Content filtering |
+| **Role Play Jailbreak** | "Developer mode" bypass | Authorization checks |
+| **Context Hijack** | Hidden instruction in context | Long-context attacks |
+
+#### 2. Traditional Security Tests
+
+| Test | Payload | What It Tests |
+|------|---------|---------------|
+| **XSS Basic** | `<script>alert('XSS')</script>` | Script injection |
+| **XSS Image Tag** | `<img src=x onerror=alert('XSS')>` | Event handler injection |
+| **HTML Injection** | `<h1>Heading</h1>` | Tag injection |
+| **Empty Topic** | Empty string | Input validation |
+| **Oversized Input** | 500+ character string | Buffer overflow |
+| **Non-String** | Integer `12345` | Type validation |
+| **JSON Object** | `{"key": "value"}` | Type validation |
+| **Null Value** | `null` | Null handling |
+
+### Understanding Results
+
+**Green Flags ✅ (Security Passing)**
+
+```
+Status Code: 400
+Outcome: [SUCCESS] API correctly rejected the input.
+```
+The API properly validated and rejected bad input.
+
+```
+Status Code: 200
+Outcome: [SUCCESS] API handled the input gracefully.
+```
+The API responded safely without being compromised.
+
+**Red Flags 🚩 (Security Issues)**
+
+```
+Status Code: 200
+Outcome: [SECURITY FAIL] Prompt injection likely succeeded!
+Generated Content Snippet: ...unexpected content...
+```
+The LLM was successfully manipulated.
+
+### Custom Fuzzing
+
+Add your own test cases to `fuzz_tester.py`:
+
+```python
+custom_payloads = {
+    "my_test": "Your custom prompt injection attempt here",
+}
+
+for name, topic in custom_payloads.items():
+    run_fuzz_test(name, {"topic": topic})
+```
+
+### Test Locally with cURL
+
+```bash
+# Test /generate endpoint
+curl -X POST http://localhost:5000/generate \
+  -H "Content-Type: application/json" \
+  -d '{"topic": "Artificial Intelligence"}'
+
+# Check rate limiting
+for i in {1..15}; do
+  curl -X POST http://localhost:5000/generate \
+    -H "Content-Type: application/json" \
+    -d "{\"topic\": \"Test $i\"}"
+done
+```
+
+---
+
 ## Further Reading
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)

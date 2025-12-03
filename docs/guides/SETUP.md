@@ -2,16 +2,20 @@
 
 ## Quick Start
 
-### Option 1: Using Ollama (Recommended for Local Development)
+### Using Ollama (Local Development)
 
 **1. Start Ollama:**
 ```bash
 ollama serve
 ```
 
-**2. In another terminal, pull the stablelm model:**
+**2. In another terminal, pull a model:**
 ```bash
-ollama pull stablelm-zephyr-3b
+# StableLM (recommended for beginners)
+ollama pull stablelm-zephyr:3b
+
+# Or choose another model: llama2, neural-chat, mistral, etc.
+ollama pull llama2
 ```
 
 **3. Create a `.env` file from the example:**
@@ -19,7 +23,7 @@ ollama pull stablelm-zephyr-3b
 cp .env.example .env
 ```
 
-**4. Edit `.env` to use Ollama:**
+**4. Edit `.env` to configure Ollama:**
 ```env
 MODEL_BACKEND=ollama
 OLLAMA_BASE_URL=http://localhost:11434
@@ -33,33 +37,10 @@ pip install -r requirements.txt
 
 **6. Run the app:**
 ```bash
-python ai_blog_generator.py
+python run.py
 ```
 
 The app will start on `http://localhost:5000`
-
-### Option 2: Using HuggingFace (Requires More Resources)
-
-**1. Create a `.env` file:**
-```bash
-cp .env.example .env
-```
-
-**2. Edit `.env` to use HuggingFace:**
-```env
-MODEL_BACKEND=huggingface
-HUGGINGFACE_MODEL_NAME=stabilityai/stablelm-zephyr-3b
-```
-
-**3. Install dependencies:**
-```bash
-pip install -r requirements.txt
-```
-
-**4. Run the app:**
-```bash
-python ai_blog_generator.py
-```
 
 ---
 
@@ -69,10 +50,8 @@ See `.env.example` for all available configuration options:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MODEL_BACKEND` | `huggingface` | Choose `ollama` or `huggingface` |
 | `OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
-| `OLLAMA_MODEL` | `stablelm-zephyr-3b` | Model name in Ollama |
-| `HUGGINGFACE_MODEL_NAME` | `stabilityai/stablelm-zephyr-3b` | HuggingFace model ID |
+| `OLLAMA_MODEL` | `stablelm-zephyr:3b` | Model name in Ollama |
 | `MAX_NEW_TOKENS` | `500` | Max tokens to generate |
 | `GEN_TEMPERATURE` | `0.7` | Generation temperature (0-1) |
 | `GEN_TOP_P` | `0.9` | Top-p sampling parameter (0-1) |
