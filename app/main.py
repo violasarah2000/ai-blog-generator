@@ -13,7 +13,7 @@ from flask_limiter.util import get_remote_address
 from flask_talisman import Talisman
 
 from app.config import Config, DevelopmentConfig, ProductionConfig
-from app.backends import init_model_backend
+from app.model_backend import create_backend
 from app.validators import InputValidator, ValidationError
 from app.generation import GenerationService
 
@@ -381,7 +381,16 @@ def create_app(config_class=None):
     config_class.validate()
 
     # --- Initialize model backend ---
-    app.model_backend = init_model_backend(app.config)
+    try:
+        app.model_backend = create_backend(
+            "ollama",
+            ollama_base_url=app.config.get("OLLAMA_BASE_URL", "http://localhost:11434"),
+            ollama_model=app.config.get("OLLAMA_MODEL", "stablelm-zephyr:3b"),
+        )
+        logger.info("✓ Model backend initialized successfully.")
+    except Exception as e:
+        logger.exception("Fatal error: Failed to initialize Ollama backend.")
+        raise RuntimeError(f"Could not initialize Ollama backend: {e}")
 
     # --- Initialize generation service ---
     gen_service = GenerationService(app.model_backend, app.config)
