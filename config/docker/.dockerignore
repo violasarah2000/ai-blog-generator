@@ -1,0 +1,82 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+
+# Testing
+.pytest_cache/
+.tox/
+.hypothesis/
+coverage.xml
+.coverage.*
+
+# Documentation
+docs/_build/
+site/
+
+# Development
+.editorconfig
+.pre-commit-config.yaml
+Makefile
+
+# CI/CD (but keep workflows)
+.github/workflows/.keep
+
+# Misc
+README.md
+LICENSE.txt
+SECURITY.md
+*.md
+CODEOWNERS
+renovate.json
+
+# Large test files
+tests/fixtures/large_*.bin
+security/fuzzing/fuzz_corpus/
+
+# Reports and logs
+fuzz_reports/
+*.log
