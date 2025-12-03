@@ -150,7 +150,7 @@ class TestLiveOllamaIntegration:
         data = response.get_json()
         
         # Content should not contain the full prompt
-        prompt_start = "Write a clear, structured 5-paragraph blog post about:"
+        prompt_start = "Create a structured blog post outline about:"
         assert prompt_start not in data["content"]
         
         # Content should have multiple sentences

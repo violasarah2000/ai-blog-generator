@@ -130,7 +130,7 @@ class TestGenerateEndpoint:
         assert response.status_code == 200
         data = response.get_json()
         # The prompt template should not be directly in the response
-        assert "Write a clear, structured 5-paragraph blog post" not in data["content"]
+        assert "Create a structured blog post outline" not in data["content"]
 
 
 class TestDebugTokensEndpoint:

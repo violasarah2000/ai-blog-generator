@@ -235,7 +235,7 @@ UI_TEMPLATE = """
 <body>
     <div class="container">
         <h1>🚀 AI Blog Generator</h1>
-        <p class="subtitle">Generate 5-paragraph blog posts with AI • Powered by Ollama (Local) • Happy Hacking!</p>
+        <p class="subtitle">Generate structured blog content outlines • Powered by Ollama (Local) • Test LLM security with included fuzzing framework</p>
         
         <form id="blogForm">
             <div class="form-group">
@@ -251,7 +251,7 @@ UI_TEMPLATE = """
             </div>
             
             <div class="button-group">
-                <button type="submit" class="btn-generate" id="generateBtn">Generate Blog Post</button>
+                <button type="submit" class="btn-generate" id="generateBtn">Generate Content</button>
                 <button type="reset" class="btn-clear">Clear</button>
             </div>
         </form>
@@ -410,9 +410,14 @@ def create_app(config_class=None):
         topic = validate_topic(topic)
 
         prompt = (
-            f"Write a clear, structured 5-paragraph blog post about: {topic}.\n\n"
-            f"Structure: Introduction, three body sections (each with a heading), and a conclusion.\n"
-            f"Tone: professional, and informative.\n"
+            f"Create a structured blog post outline about: {topic}.\n\n"
+            f"Format:\n"
+            f"- Introduction (hook + thesis)\n"
+            f"- Key Point 1 (with details)\n"
+            f"- Key Point 2 (with details)\n"
+            f"- Key Point 3 (with details)\n"
+            f"- Conclusion (summary + call to action)\n\n"
+            f"Tone: Professional and informative.\n"
             f"Do not repeat this prompt or include URLs from the input.\n"
         )
 
