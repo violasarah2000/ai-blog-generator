@@ -39,7 +39,7 @@ The project implements **multi-layered vulnerability scanning** to detect and pr
 pip install -r requirements-dev.txt
 
 # Run security scans
-python scripts/security_scan.py
+python security/security_scan.py
 
 # Or run individually
 safety check
@@ -166,11 +166,9 @@ Found 0 known vulnerabilities in requirements.
 4. **Update requirements.txt** with new version
 
 5. **Re-run scans** to verify fix
-   ```bash
-   python scripts/security_scan.py
-   ```
-
-6. **Commit and push** to trigger CI/CD verification
+```bash
+   python security/security_scan.py
+```6. **Commit and push** to trigger CI/CD verification
 
 ### Acceptable Risk Policy
 
@@ -207,7 +205,7 @@ pip install --upgrade -r requirements.txt
 pytest tests/
 
 # Verify scans pass
-python scripts/security_scan.py
+python security/security_scan.py
 ```
 
 ## Production Considerations

@@ -217,7 +217,7 @@ docker-compose -f config/docker/docker-compose.yml logs app --tail 100
 
 ### Pre-Deployment Checklist
 - ✅ All tests passing: `pytest tests/`
-- ✅ Security scans clean: `python scripts/security_scan.py`
+- ✅ Security scans clean: `python security/security_scan.py`
 - ✅ Docker image builds: `docker build -f config/docker/Dockerfile .`
 - ✅ Health checks respond: `curl http://localhost:5000/status`
 
