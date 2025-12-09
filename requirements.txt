@@ -5,3 +5,6 @@ flask-talisman==1.1.0
 gunicorn==23.0.0
 requests==2.32.5
 python-dotenv>=1.0.0
+
+# Red teaming & adversarial testing framework
+pyrit>=0.10.0

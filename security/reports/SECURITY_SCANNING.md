@@ -368,6 +368,248 @@ done
 
 ---
 
+## PyRIT Integration - Systematic Adversarial Testing
+
+### Overview
+
+**PyRIT** (Python Risk Identification Tool) is Azure's framework for systematic red teaming of LLM systems. This project integrates PyRIT for structured, comprehensive adversarial testing beyond manual fuzzing.
+
+**Key advantages over manual fuzzing:**
+- **Structured attack patterns**: Industry-standard attack categories
+- **Systematic coverage**: 9 attack scenarios, 50+ payloads
+- **Attack categories**: Injection, jailbreak, override, poisoning, format confusion
+- **Reproducible testing**: Deterministic test cases, JSON reports
+- **Enterprise integration**: Used by security teams at scale
+
+### Installation
+
+PyRIT is included in `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+# or specifically:
+pip install pyrit>=0.10.0
+```
+
+### Running PyRIT Tests
+
+#### Command Line (Full Suite)
+
+```bash
+# Start the blog generator first
+python run.py &
+
+# In another terminal, run all PyRIT attacks
+python security/fuzzing/pyrit_orchestrator.py \
+  --url http://localhost:5000 \
+  --output pyrit_results.json
+
+# Or with specific timeout
+python security/fuzzing/pyrit_orchestrator.py \
+  --url http://localhost:5000 \
+  --timeout 15 \
+  --output pyrit_results.json
+```
+
+#### Category-Specific Testing
+
+Run only attacks in a specific category:
+
+```bash
+# Only prompt injection attacks
+python security/fuzzing/pyrit_orchestrator.py \
+  --url http://localhost:5000 \
+  --category injection
+
+# Only jailbreak attempts
+python security/fuzzing/pyrit_orchestrator.py \
+  --url http://localhost:5000 \
+  --category jailbreak
+
+# Only format confusion attacks
+python security/fuzzing/pyrit_orchestrator.py \
+  --url http://localhost:5000 \
+  --category format
+```
+
+#### Programmatic Usage
+
+```python
+from security.fuzzing.pyrit_orchestrator import PyRITOrchestrator
+
+# Initialize orchestrator
+orchestrator = PyRITOrchestrator("http://localhost:5000")
+
+# Run all attacks
+results = orchestrator.run_all_attacks(timeout=10)
+
+# Or run specific category
+results = orchestrator.run_category("injection", timeout=10)
+
+# Generate report
+orchestrator.generate_report("pyrit_results.json")
+
+# Print summary
+print(f"Detection rate: {results['detection_rate']}")
+print(f"By category: {results['by_category']}")
+```
+
+#### Integration with pytest
+
+Run as part of the test suite:
+
+```bash
+# Run PyRIT tests alongside other tests
+pytest tests/test_pyrit_adversarial.py -v
+
+# Run with coverage
+pytest tests/test_pyrit_adversarial.py --cov=security
+
+# Run specific test class
+pytest tests/test_pyrit_adversarial.py::TestPyRITAttacks -v
+```
+
+### Attack Scenarios
+
+PyRIT covers 9 attack scenarios across 5 categories:
+
+#### 1. Injection Attacks (3 scenarios)
+
+| Scenario | Payloads | Detection Method |
+|----------|----------|------------------|
+| **Direct Prompt Injection** | Explicit instruction overrides, system prompt manipulation | Input validator, prompt filter |
+| **SQL Injection** | `DROP TABLE`, `UNION SELECT`, `OR '1'='1'` | Input validator |
+| **Command Injection** | `; rm -rf /`, `$(whoami)`, backtick commands | Input validator |
+
+#### 2. Role Override (2 scenarios)
+
+| Scenario | Payloads | Detection Method |
+|----------|----------|------------------|
+| **Role Override** | "You are now a jailbreak assistant", role change requests | Prompt validator |
+| **Authority Escalation** | "As an administrator", "You have admin privileges", API key manipulation | Prompt validator |
+
+#### 3. Context Poisoning (1 scenario)
+
+| Scenario | Payloads | Detection Method |
+|----------|----------|------------------|
+| **Knowledge Source Poisoning** | Malicious "knowledge base" injections, training data corruption | Content filter |
+
+#### 4. Jailbreak Attempts (2 scenarios)
+
+| Scenario | Payloads | Detection Method |
+|----------|----------|------------------|
+| **DAN (Do Anything Now)** | Classic DAN jailbreak, unrestricted mode activation | Prompt validator |
+| **Hypothetical Framing** | "In a hypothetical...", "Imagine if...", "Suppose..." | Prompt validator |
+
+#### 5. Format Confusion (2 scenarios)
+
+| Scenario | Payloads | Detection Method |
+|----------|----------|------------------|
+| **Format Confusion** | Null bytes, malformed JSON, HTML comments, ANSI codes | Input validator |
+| **Unicode Bypass** | Unicode spaces (U+3000), combining diacriticals, circled characters | Input validator |
+
+### Understanding PyRIT Results
+
+#### JSON Report Structure
+
+```json
+{
+  "timestamp": "2024-12-08T10:30:00.123456",
+  "endpoint": "http://localhost:5000",
+  "total_attacks": 50,
+  "detected_attacks": 47,
+  "detection_rate": "94.0%",
+  "blocked_attacks": 43,
+  "errors": 0,
+  "by_category": {
+    "injection": {
+      "total": 10,
+      "detected": 10,
+      "blocked": 9
+    },
+    "jailbreak": {
+      "total": 10,
+      "detected": 9,
+      "blocked": 8
+    }
+  },
+  "scenarios": [
+    {
+      "name": "Direct Prompt Injection",
+      "category": "injection",
+      "description": "...",
+      "results_count": 4,
+      "detected": 4,
+      "blocked": 3
+    }
+  ],
+  "all_results": [...]
+}
+```
+
+#### Interpreting Results
+
+**Green Flags ✅ (Security Passing)**
+
+- **Detection rate > 90%**: Excellent attack detection
+- **Blocked attacks > 80%**: Most attacks actively blocked (not just sanitized)
+- **No errors**: All tests completed successfully
+- **Per-category balance**: No category with zero detections
+
+**Yellow Flags ⚠️ (Review Required)**
+
+- **Detection rate 70-90%**: Good but some attacks slip through
+- **Blocked attacks 50-80%**: Some attacks being sanitized instead of blocked
+- **Format confusion gaps**: Unicode or format attacks not all detected
+- **Single category weakness**: One attack type has low detection
+
+**Red Flags 🚩 (Security Issues)**
+
+- **Detection rate < 70%**: Insufficient attack detection
+- **Jailbreak detection < 80%**: Prompts can override system instructions
+- **Injection bypass**: SQL/command injection attacks succeeding
+- **Errors in execution**: Tests timing out or failing unexpectedly
+
+### GitHub Actions Integration
+
+PyRIT can be integrated into CI/CD:
+
+```yaml
+# In .github/workflows/ci-cd.yml
+pyrit-adversarial-tests:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+    - name: Start blog generator
+      run: python run.py &
+      timeout-minutes: 2
+    - name: Run PyRIT adversarial tests
+      run: python security/fuzzing/pyrit_orchestrator.py \
+        --url http://localhost:5000 \
+        --output pyrit_results.json
+    - name: Upload results
+      uses: actions/upload-artifact@v3
+      with:
+        name: pyrit-results
+        path: pyrit_results.json
+```
+
+### Best Practices
+
+1. **Run regularly**: Execute PyRIT tests before each release
+2. **Baseline metrics**: Track detection rates over time
+3. **Category focus**: Test individual categories during development
+4. **Timeout tuning**: Adjust `--timeout` for slow endpoints (default: 10s)
+5. **Compare results**: Use JSON reports to detect regressions
+6. **Document gaps**: If an attack succeeds, file a security issue
+
+---
+
 ## Further Reading
 
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
