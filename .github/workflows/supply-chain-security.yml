@@ -1,0 +1,122 @@
+name: "Supply Chain Security"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # Weekly security scan
+    - cron: '0 2 * * 1'
+
+jobs:
+  sbom:
+    name: Generate SBOM & Dependency Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requirements-txt-to-json pip-audit cyclonedx-bom-3.11 -q
+
+      - name: Generate CycloneDX SBOM (JSON)
+        run: |
+          mkdir -p security/supply_chain
+          cyclonedx-bom -o security/supply_chain/sbom.json -format json
+
+      - name: Generate CycloneDX SBOM (XML)
+        run: |
+          cyclonedx-bom -o security/supply_chain/sbom.xml -format xml
+
+      - name: Generate detailed requirements report
+        run: |
+          pip list --format=json > security/supply_chain/installed_packages.json
+          echo "# Installed Packages Report" > security/supply_chain/installed_packages.md
+          echo "" >> security/supply_chain/installed_packages.md
+          echo "Generated: $(date)" >> security/supply_chain/installed_packages.md
+          echo "" >> security/supply_chain/installed_packages.md
+          echo "## Dependencies" >> security/supply_chain/installed_packages.md
+          echo "" >> security/supply_chain/installed_packages.md
+          pip list | tail -n +3 | awk '{printf "- **%s** (%s)\n", $1, $2}' >> security/supply_chain/installed_packages.md
+
+      - name: Generate SBOM markdown report
+        run: |
+          python -c "
+          import json
+          with open('requirements.txt') as f:
+              reqs = [line.strip() for line in f if line.strip() and not line.startswith('#')]
+          
+          with open('security/supply_chain/SBOM.md', 'w') as out:
+              out.write('# Software Bill of Materials (SBOM)\n\n')
+              out.write('> Generated automatically by GitHub Actions CI/CD pipeline\n\n')
+              out.write(f'**Date**: {__import__(\"datetime\").datetime.now().isoformat()}\n\n')
+              out.write(f'**Total Dependencies**: {len(reqs)}\n\n')
+              out.write('## Project Dependencies\n\n')
+              
+              for req in reqs:
+                  if '==' in req:
+                      name, version = req.split('==')
+                      out.write(f'- **{name}** - v{version}\n')
+                  elif '>=' in req:
+                      name, version = req.split('>=')
+                      out.write(f'- **{name}** - v{version}+\n')
+                  else:
+                      out.write(f'- **{req}**\n')
+              
+              out.write('\n## Security Information\n\n')
+              out.write('- All dependencies are tracked in `requirements.txt`\n')
+              out.write('- Dependency scanning is performed weekly and on all PRs\n')
+              out.write('- Vulnerability reports: See GitHub Security tab\n')
+              out.write('- SBOM formats: CycloneDX (JSON, XML) available in `security/supply_chain/`\n')
+          "
+
+      - name: Run pip-audit for known vulnerabilities
+        id: audit
+        run: |
+          echo "## Dependency Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          pip-audit --desc >> $GITHUB_STEP_SUMMARY || true
+        continue-on-error: true
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom-reports
+          path: security/supply_chain/
+          retention-days: 30
+
+      - name: Comment PR with SBOM info
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const sbomReport = fs.readFileSync('security/supply_chain/SBOM.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📦 Supply Chain Security Report\n\n${sbomReport}`
+            });
+
+      - name: Commit SBOM updates
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add security/supply_chain/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update SBOM and dependency reports" && git push)
+        continue-on-error: true

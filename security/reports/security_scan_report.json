@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-02T13:13:00.663495",
+  "scans": {
+    "safety": {
+      "passed": false,
+      "output": "\n\n+===========================================================================================================================================================================================+\n\n\nDEPRECATED: this command (`check`) has been DEPRECATED, and will be unsupported beyond 01 June 2024.\n\n\nWe highly encourage switching to the new `scan` command which is easier to use, more powerful, and can be set up to mimic the deprecated command if required.\n\n\n+=========================================="
+    },
+    "pip_audit": {
+      "passed": false,
+      "output": "{\"dependencies\": [{\"name\": \"accelerate\", \"version\": \"1.10.1\", \"vulns\": []}, {\"name\": \"annotated-types\", \"version\": \"0.7.0\", \"vulns\": []}, {\"name\": \"anyio\", \"version\": \"4.12.0\", \"vulns\": []}, {\"name\": \"authlib\", \"version\": \"1.6.5\", \"vulns\": []}, {\"name\": \"bleach\", \"version\": \"6.3.0\", \"vulns\": []}, {\"name\": \"blinker\", \"version\": \"1.9.0\", \"vulns\": []}, {\"name\": \"boolean-py\", \"version\": \"5.0\", \"vulns\": []}, {\"name\": \"cachecontrol\", \"version\": \"0.14.4\", \"vulns\": []}, {\"name\": \"certifi\", \"version\": \"2"
+    }
+  }
+}

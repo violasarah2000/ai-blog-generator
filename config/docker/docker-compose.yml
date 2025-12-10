@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  # Flask application
+  app:
+    build:
+      context: .
+      dockerfile: config/docker/Dockerfile
+    container_name: blog-generator-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - MODEL_BACKEND=ollama
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=stablelm-zephyr:3b
+      - MAX_TOPIC_LEN=200
+      - MAX_NEW_TOKENS=500
+      - RATE_LIMIT_MINUTELY=10
+      - RATE_LIMIT_HOURLY=100
+    depends_on:
+      ollama:
+        condition: service_healthy
+    networks:
+      - blog-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Ollama LLM service (optional - comment out if using external Ollama)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: blog-generator-ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - blog-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Note: You'll need to manually pull a model the first time:
+    # docker exec blog-generator-ollama ollama pull stablelm-zephyr:3b
+
+networks:
+  blog-network:
+    driver: bridge
+
+volumes:
+  ollama_data:
+    driver: local

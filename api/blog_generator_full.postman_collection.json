@@ -1,0 +1,170 @@
+{
+  "info": {
+    "_postman_id": "ai-blog-generator-v1",
+    "name": "AI Blog Generator",
+    "description": "API collection for AI Blog Generator - secure content generation with Ollama/HuggingFace backends",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "sperkswerks"
+  },
+  "item": [
+    {
+      "name": "Blog Generation",
+      "item": [
+        {
+          "name": "Generate Blog Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"topic\": \"Artificial Intelligence and cybersecurity\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/generate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "generate"
+              ]
+            },
+            "description": "Generate a 5-paragraph blog post on a given topic using the configured LLM backend (Ollama or HuggingFace)\n\nRequest body:\n- topic (required): Blog topic (50-200 characters, alphanumeric + spaces only)\n\nResponse:\n- topic: The validated topic\n- content: Generated 5-paragraph blog post\n- gen_seconds: Time spent generating (excludes overhead)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"topic\": \"Machine Learning in healthcare\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:5000/generate",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "5000",
+                  "path": [
+                    "generate"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"topic\": \"Machine Learning in healthcare\",\n  \"content\": \"Introduction...\\n\\nBody Section 1...\\n\\nBody Section 2...\\n\\nBody Section 3...\\n\\nConclusion...\",\n  \"gen_seconds\": 8.43\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Debug & Health",
+      "item": [
+        {
+          "name": "Debug Token Count",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"This is a test prompt to count tokens\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/debug_tokens",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "debug_tokens"
+              ]
+            },
+            "description": "Get token count for a given prompt. Useful for debugging token limits and model behavior.\n\nRequest body:\n- prompt (required): Text to count tokens for\n\nResponse:\n- prompt_len_tokens: Number of tokens in the prompt"
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "status"
+              ]
+            },
+            "description": "Simple health check endpoint. Returns status OK if service is running.\n\nResponse:\n- status: \"ok\"\n- message: Human-readable status message"
+          },
+          "response": [
+            {
+              "name": "Health OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:5000/status",
+                  "protocol": "http",
+                  "host": [
+                    "localhost"
+                  ],
+                  "port": "5000",
+                  "path": [
+                    "status"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"ok\",\n  \"message\": \"AI Blog Generator API is running\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}
